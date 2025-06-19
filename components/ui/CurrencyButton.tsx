@@ -1,12 +1,10 @@
 import React from 'react';
-import {Pressable, Text, Image, StyleSheet, View, useColorScheme} from 'react-native';
+import {Pressable, Text, Image, StyleSheet, View, useColorScheme, Appearance} from 'react-native';
 
 export default function CurrencyButton({ currency, currencyName, onPress }) {
 
 
-
-    const colorScheme = useColorScheme();
-    const isDark = colorScheme === 'dark';
+    Appearance.getColorScheme = () => 'light';
 
     function getCurrencySymbolImage(currencyCode) {
         switch (currencyCode) {
@@ -25,34 +23,53 @@ export default function CurrencyButton({ currency, currencyName, onPress }) {
 
     return (
         <Pressable
-            style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 12,
-            backgroundColor: isDark ? '#222' : '#fff',
-            borderRadius: 8,
-            marginVertical: 6,
-        }}
-           onPress={onPress}>
-            <Image
-                source={getCurrencySymbolImage(currency)}
-                style={styles.icon}
-                resizeMode="contain"
-            />
-            <Text style={styles.text}>{currencyName}</Text>
+            style={({ pressed }) => [
+                styles.button,
+                pressed && styles.buttonPressed,
+            ]}
+            onPress={onPress}
+        >
+            <View style={styles.content}>
+                <Image
+                    source={getCurrencySymbolImage(currency)}
+                    style={styles.icon}
+                    resizeMode="contain"
+                />
+                <Text style={styles.text}>{currencyName}</Text>
+            </View>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
 
+    button: {
+        minHeight: 48,
+        paddingHorizontal: 20, // similar to px: 2.5
+        marginHorizontal: 16,  // ~1rem
+        marginVertical: 8,     // ~.5rem
+        backgroundColor: '#fff',
+        borderWidth: 0.3,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        justifyContent: 'center',
+        transitionDuration: '300ms',
+    },
+    buttonPressed: {
+        backgroundColor: '#C8E6C9',
+        borderColor: '#D0EBD1',
+    },
+    content: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     icon: {
         width: 24,
         height: 24,
-        marginRight: 12
+        marginRight: 12,
     },
     text: {
         fontSize: 16,
-        color: '#fff',
+        color: 'black',
     },
 });
