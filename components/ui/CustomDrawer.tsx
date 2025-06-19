@@ -1,20 +1,44 @@
 import {useNavigation} from "@react-navigation/native";
 import {DrawerContentScrollView} from "@react-navigation/drawer";
-import {Appearance, Pressable, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Appearance, Pressable, StyleSheet, Text, View} from "react-native";
 import CurrencyButton from "@/components/ui/CurrencyButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {supabase} from "@/lib/supabase";
 
 export function CustomDrawerContent(props) {
 
     Appearance.getColorScheme = () => 'light';
     const navigation = useNavigation();
 
-    const currencies = [
-        { id: '1', name: 'Euro', symbol: '€' },
-        { id: '2', name: 'Dollar', symbol: '$' },
-        { id: '3', name: 'Bitcoin', symbol: '₿' },
-    ];
+    const [currencies, setCurrencies] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchCurrencies = async () => {
+        const { data, error } = await supabase.from('Currencies').select('*');
+
+        if (error) {
+            console.error('Error fetching currencies:', error.message);
+        } else {
+            setCurrencies(data);
+            console.log(data)
+        }
+
+        setLoading(false);
+    };
+
+
+    useEffect(() => {
+        fetchCurrencies();
+    }, []);
+
+    if (loading) return <ActivityIndicator size="large" />;
+
+    // const currencies = [
+    //     { id: '1', name: 'Euro', symbol: '€' },
+    //     { id: '2', name: 'Dollar', symbol: '$' },
+    //     { id: '3', name: 'Bitcoin', symbol: '₿' },
+    // ];
 
     return (
         <DrawerContentScrollView {...props} style={{backgroundColor: 'white'}}>
@@ -22,10 +46,10 @@ export function CustomDrawerContent(props) {
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black" }}>Currencies</Text>
             </View>
 
-            {currencies.map((cur) => (
+            {currencies.map((currency) => (
                 <CurrencyButton
-                    currency="EUR"
-                    currencyName="Euro"
+                    currency={currency.currency}
+                    currencyName={currency.currency_name}
                     onPress={() => console.log('Euro clicked')}
                 />
             ))}

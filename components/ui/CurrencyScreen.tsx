@@ -1,12 +1,14 @@
-import {Appearance, StyleSheet, Text, View} from "react-native";
-import React from "react";
+import {Appearance, StyleSheet, View} from "react-native";
+import React, {useEffect} from "react";
 import BalanceCard from "@/components/ui/BalanceCard";
 
 export function CurrencyScreen({ route }) {
 
     Appearance.getColorScheme = () => 'light';
+    // const { currency } = route.params || { currency: { name: 'Select currency', symbol: '' } };
 
-    const { currency } = route.params || { currency: { name: 'Select currency', symbol: '' } };
+
+
 
     return (
         <View style={styles.screen}>
