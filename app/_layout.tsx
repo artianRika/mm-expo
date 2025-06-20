@@ -5,11 +5,9 @@ import {StatusBar} from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import 'react-native-url-polyfill/auto';
-
-import {useColorScheme} from '@/hooks/useColorScheme';
+import {CurrencyProvider} from "@/contexts/currencyContext";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -21,11 +19,13 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+        <CurrencyProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </CurrencyProvider>
     </ThemeProvider>
   );
 }

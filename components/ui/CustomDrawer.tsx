@@ -1,12 +1,15 @@
 import {useNavigation} from "@react-navigation/native";
 import {DrawerContentScrollView} from "@react-navigation/drawer";
-import {ActivityIndicator, Appearance, Pressable, StyleSheet, Text, View} from "react-native";
+import {Appearance, Pressable, StyleSheet, Text, View} from "react-native";
 import CurrencyButton from "@/components/ui/CurrencyButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React, {useEffect, useState} from "react";
-import {supabase} from "@/lib/supabase";
+import React, {useContext, useEffect, useState} from "react";
+import {CurrencyContext} from "@/contexts/currencyContext";
 
 export function CustomDrawerContent(props) {
+
+    const { openAddCurrencyDialog } = props;
+
 
     Appearance.getColorScheme = () => 'light';
     const navigation = useNavigation();
@@ -14,31 +17,15 @@ export function CustomDrawerContent(props) {
     const [currencies, setCurrencies] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchCurrencies = async () => {
-        const { data, error } = await supabase.from('Currencies').select('*');
+    const { getCurrencies, currencyList } = useContext(CurrencyContext)
 
-        if (error) {
-            console.error('Error fetching currencies:', error.message);
-        } else {
-            setCurrencies(data);
-            console.log(data)
-        }
-
-        setLoading(false);
-    };
 
 
     useEffect(() => {
-        fetchCurrencies();
+        getCurrencies();
     }, []);
 
-    if (loading) return <ActivityIndicator size="large" />;
-
-    // const currencies = [
-    //     { id: '1', name: 'Euro', symbol: '€' },
-    //     { id: '2', name: 'Dollar', symbol: '$' },
-    //     { id: '3', name: 'Bitcoin', symbol: '₿' },
-    // ];
+    // if (loading) return <ActivityIndicator size="large" />;
 
     return (
         <DrawerContentScrollView {...props} style={{backgroundColor: 'white'}}>
@@ -46,7 +33,7 @@ export function CustomDrawerContent(props) {
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black" }}>Currencies</Text>
             </View>
 
-            {currencies.map((currency) => (
+            {currencyList.map((currency) => (
                 <CurrencyButton
                     currency={currency.currency}
                     currencyName={currency.currency_name}
@@ -65,7 +52,7 @@ export function CustomDrawerContent(props) {
                     styles.button,
                     pressed && styles.buttonPressed,
                 ]}
-                // onPress={onPress}
+                onPress={openAddCurrencyDialog}
             >
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="add" size={24} color="black" />
