@@ -1,32 +1,27 @@
-import React from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    Image,
-    useColorScheme,
-    Alert,
-    TouchableOpacity,
-} from 'react-native';
-import { Colors } from '@/constants/Colors';
-import { useRouter } from 'expo-router';
+import React, {useContext, useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {Colors} from '@/constants/Colors';
+import {CurrencyContext} from "@/contexts/currencyContext";
+import {LogoutDialog} from "@/components/dialogs/LogoutDialog";
+
 
 export default function AccountScreen() {
-    const colorScheme = useColorScheme();
-    const router = useRouter();
+    const {numberOfCurrencies, numberOfTransactions} = useContext(CurrencyContext)
+
+    const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
 
     const user = {
         name: 'Artian',
         surname: 'Rika',
         profilePic: 'https://i.pravatar.cc/150?img=3',
-        currencyCount: 5,
         weeklyTransactions: 12,
     };
 
-    const backgroundColor = Colors[colorScheme ?? 'light'].background;
-    const textColor = Colors[colorScheme ?? 'light'].text;
+    const backgroundColor = Colors['light'].background;
+    const textColor = Colors['light'].text;
 
     return (
+        <>
         <View style={[styles.container, { backgroundColor }]}>
             <View style={styles.content}>
                 <Image source={{ uri: user.profilePic }} style={styles.avatar} />
@@ -36,21 +31,27 @@ export default function AccountScreen() {
 
                 <View style={styles.statsContainer}>
                     <View style={styles.statBox}>
-                        <Text style={[styles.statNumber, { color: textColor }]}>{user.currencyCount}</Text>
+                        <Text style={[styles.statNumber, { color: textColor }]}>{numberOfCurrencies ?? 0}</Text>
                         <Text style={[styles.statLabel, { color: textColor }]}>Currencies</Text>
                     </View>
 
                     <View style={styles.statBox}>
-                        <Text style={[styles.statNumber, { color: textColor }]}>{user.weeklyTransactions}</Text>
+                        <Text style={[styles.statNumber, { color: textColor }]}>{numberOfTransactions ?? 0}</Text>
                         <Text style={[styles.statLabel, { color: textColor }]}>Transactions (7d)</Text>
                     </View>
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.logoutButton}>
+            <TouchableOpacity style={styles.logoutButton}  onPress={() => setLogoutDialogVisible(true)}>
                 <Text style={styles.logoutText}>Log Out</Text>
             </TouchableOpacity>
         </View>
+
+            <LogoutDialog
+                alertOpen={logoutDialogVisible}
+                onAlertClose={() => setLogoutDialogVisible(false)}
+            />
+        </>
     );
 }
 

@@ -14,6 +14,9 @@ export const CurrencyProvider = ({ children }) => {
     const [currencyList, setCurrencyList] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState({});
 
+    const [numberOfCurrencies, setNumberOfCurrencies] = useState(0);
+    const [numberOfTransactions, setNumberOfTransactions] = useState(0);
+
     // const [name, setName] = useState(selectedCurrency.currency_name || "Name");
     // const [amount, setAmount] = useState(selectedCurrency.amount || "Amount");
 
@@ -32,6 +35,10 @@ export const CurrencyProvider = ({ children }) => {
     //     }
     // }, [selectedCurrency]);
 
+    useEffect(() => {
+        getNumberOfCurrencies();
+        getNumberOfTransactions();
+    }, [currencyList]);
 
     const getCurrencies = useCallback(async (curr_id = null) => {
 
@@ -61,6 +68,47 @@ export const CurrencyProvider = ({ children }) => {
             }
         }
     }, []);  //TODO: [authUser]
+
+    const getNumberOfCurrencies = async () =>{
+        const { count, error } = await supabase
+            .from('Currencies')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', '68c52304-7c95-4791-a6b5-33c29068c6dc');
+        //TODO: authuserids
+
+        if (error) {
+            console.error('Error fetching currencies:', error);
+        } else {
+            setNumberOfCurrencies(count)
+        }
+
+    }
+
+    const getNumberOfTransactions = async () =>{
+        const { count, error } = await supabase
+            .from('Transactions')
+            .select('*', {
+                count: 'exact',
+                head: true,
+            })
+            .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+            .in('currency_id',
+                (
+                    await supabase
+                        .from('Currencies')
+                        .select('currency_id')
+                        .eq('user_id', '68c52304-7c95-4791-a6b5-33c29068c6dc') //TODO: change
+                ).data.map(c => c.currency_id)
+            );
+
+        if (error) {
+            console.error('Error counting transactions:', error);
+        } else {
+            setNumberOfTransactions(count)
+            console.log('Transaction count in past 7 days:', count);
+        }
+
+    }
 
     // const getCurrencyById = async (currencyId) => {
     //
@@ -119,6 +167,9 @@ export const CurrencyProvider = ({ children }) => {
                 selectedCurrency,
                 setSelectedCurrency,
                 getCurrencies,
+
+                numberOfCurrencies,
+                numberOfTransactions
                 // getCurrencyById,
 
                 // name,
