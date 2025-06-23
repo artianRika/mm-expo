@@ -1,4 +1,3 @@
-import {DrawerActions, useNavigation} from "@react-navigation/native";
 import {DrawerContentScrollView} from "@react-navigation/drawer";
 import {Appearance, Pressable, StyleSheet, Text, View} from "react-native";
 import CurrencyButton from "@/components/ui/CurrencyButton";

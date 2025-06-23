@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import { Button, Dialog, Portal, Paragraph } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
-import { CurrencyContext } from '../../contexts/currencyContext';
-import { supabase } from '../../lib/supabase';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, TextInput} from 'react-native';
+import {Button, Dialog, Portal} from 'react-native-paper';
+import {Picker} from '@react-native-picker/picker';
+import {CurrencyContext} from '../../contexts/currencyContext';
+import {supabase} from '../../lib/supabase';
 import {UserContext} from "@/contexts/UserContext";
 
 export default function AddCurrencyDialog({ visible, onDismiss }) {

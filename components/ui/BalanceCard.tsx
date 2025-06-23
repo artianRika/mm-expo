@@ -35,7 +35,6 @@ export const BalanceCard = () => {
                     onDismiss={closeEditDialog}
                 />
 
-                {/* Amount Display */}
                 <Text style={styles.amountText}>
                     {selectedCurrency.amount + " " + selectedCurrency.currency}
                 </Text>

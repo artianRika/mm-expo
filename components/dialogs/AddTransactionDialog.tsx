@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { Dialog, Portal, Button, TextInput, Text, RadioButton } from 'react-native-paper';
+import React, {useContext, useEffect, useState} from 'react';
+import {Platform, StyleSheet, View} from 'react-native';
+import {Button, Dialog, Portal, RadioButton, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { CurrencyContext } from '@/contexts/currencyContext';
+import {CurrencyContext} from '@/contexts/currencyContext';
 import {supabase} from "@/lib/supabase";
 import {TransactionsContext} from "@/contexts/transactionContext";
 

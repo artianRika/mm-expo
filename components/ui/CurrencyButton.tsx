@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: 'black',
-        flex: 1, // take remaining space
+        flex: 1,
     },
     moreButton: {
         paddingHorizontal: 8,
