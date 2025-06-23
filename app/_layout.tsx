@@ -9,6 +9,7 @@ import 'react-native-gesture-handler';
 import 'react-native-url-polyfill/auto';
 import {CurrencyProvider} from "@/contexts/currencyContext";
 import {PaperProvider} from "react-native-paper";
+import {TransactionsProvider} from "@/contexts/transactionContext";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -26,11 +27,13 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <PaperProvider>
         <CurrencyProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
+          <TransactionsProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+          </TransactionsProvider>
         </CurrencyProvider>
       </PaperProvider>
     </ThemeProvider>

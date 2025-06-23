@@ -3,19 +3,19 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import {CurrencyContext} from "@/contexts/currencyContext";
 import UpdateCurrencyDialog from "@/components/dialogs/UpdateCurrencyDialog";
+import AddTransactionDialog from "@/components/dialogs/AddTransactionDialog";
 
 
 export const BalanceCard = () => {
     const { selectedCurrency } = useContext(CurrencyContext);
 
 
-    const [addTransactionAlertOpen, setTransactionAlertOpen] = useState(false);
-    const [type, setType] = useState('Expense');
-
-
     const [editAmountAlertOpen, setEditAmountAlertOpen] = useState(false);
     const openEditDialog = () => setEditAmountAlertOpen(true);
     const closeEditDialog = () => setEditAmountAlertOpen(false);
+
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [type, setType] = useState('Expense');
 
     return (
         <View style={styles.outerContainer}>
@@ -45,7 +45,7 @@ export const BalanceCard = () => {
                     <Pressable
                         onPress={() => {
                             setType('Income');
-                            setTransactionAlertOpen(true);
+                            setDialogVisible(true)
                         }}
                     >
                         <MaterialIcons name="add-circle-outline" size={40} color="black" />
@@ -54,7 +54,7 @@ export const BalanceCard = () => {
                     <Pressable
                         onPress={() => {
                             setType('Expense');
-                            setTransactionAlertOpen(true);
+                            setDialogVisible(true)
                         }}
                     >
                         <MaterialIcons
@@ -66,6 +66,12 @@ export const BalanceCard = () => {
                 </View>
 
             </View>
+                <AddTransactionDialog
+                    visible={dialogVisible}
+                    onDismiss={() => setDialogVisible(false)}
+                    type={type}
+                    setType={setType}
+                />
         </View>
     );
 };
@@ -75,7 +81,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        marginTop: 40
+        marginTop: 23,
+        marginBottom: 20
     },
     card: {
         backgroundColor: '#D0EBD1',

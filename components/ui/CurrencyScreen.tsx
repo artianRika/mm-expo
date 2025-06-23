@@ -2,6 +2,7 @@ import {Appearance, StyleSheet, View} from "react-native";
 import React, {useContext, useEffect} from "react";
 import BalanceCard from "@/components/ui/BalanceCard";
 import {CurrencyContext} from "@/contexts/currencyContext";
+import TransactionsList from "@/components/ui/TransactionsList";
 
 export function CurrencyScreen({ route }) {
 
@@ -16,7 +17,10 @@ export function CurrencyScreen({ route }) {
         <View style={styles.screen}>
             {
                 !isEmpty &&
-                <BalanceCard/>
+                <>
+                    <BalanceCard/>
+                    <TransactionsList/>
+                </>
             }
         </View>
     );
