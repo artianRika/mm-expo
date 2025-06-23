@@ -1,18 +1,23 @@
 import {Appearance, StyleSheet, View} from "react-native";
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import BalanceCard from "@/components/ui/BalanceCard";
+import {CurrencyContext} from "@/contexts/currencyContext";
 
 export function CurrencyScreen({ route }) {
 
     Appearance.getColorScheme = () => 'light';
-    // const { currency } = route.params || { currency: { name: 'Select currency', symbol: '' } };
+
+    const {selectedCurrency } = useContext(CurrencyContext)
 
 
-
+    const isEmpty = Object.keys(selectedCurrency).length === 0;
 
     return (
         <View style={styles.screen}>
-            <BalanceCard/>
+            {
+                !isEmpty &&
+                <BalanceCard/>
+            }
         </View>
     );
 }

@@ -6,6 +6,10 @@ import {HapticTab} from '@/components/HapticTab';
 import {IconSymbol} from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import {Colors} from '@/constants/Colors';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+<MaterialIcons name="account-circle" size={30} color="black" />
+
 
 export default function TabLayout() {
 
@@ -38,7 +42,7 @@ export default function TabLayout() {
         name="account"
         options={{
           title: 'Account',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="account-circle" size={30} color={color} />,
         }}
       />
     </Tabs>

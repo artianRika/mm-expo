@@ -1,24 +1,31 @@
-import {useNavigation} from "@react-navigation/native";
+import {DrawerActions, useNavigation} from "@react-navigation/native";
 import {DrawerContentScrollView} from "@react-navigation/drawer";
 import {Appearance, Pressable, StyleSheet, Text, View} from "react-native";
 import CurrencyButton from "@/components/ui/CurrencyButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, {useContext, useEffect, useState} from "react";
 import {CurrencyContext} from "@/contexts/currencyContext";
+import DeleteCurrencyDialog from "@/components/dialogs/DeleteCurrencyDialog";
 
 export function CustomDrawerContent(props) {
 
-    const { openAddCurrencyDialog } = props;
+    const { openAddCurrencyDialog, navigation } = props;
 
 
     Appearance.getColorScheme = () => 'light';
-    const navigation = useNavigation();
 
     const [currencies, setCurrencies] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const { getCurrencies, currencyList } = useContext(CurrencyContext)
+    const { getCurrencies, currencyList, setSelectedCurrency } = useContext(CurrencyContext)
 
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+    const [currencyToDelete, setCurrencyToDelete] = useState(null);
+
+    const openDeleteDialog = (currency) => {
+        setCurrencyToDelete(currency);
+        setDeleteDialogVisible(true);
+    };
 
 
     useEffect(() => {
@@ -35,24 +42,25 @@ export function CustomDrawerContent(props) {
 
             {currencyList.map((currency) => (
                 <CurrencyButton
+                    key={currency.currency_id}
                     currency={currency.currency}
                     currencyName={currency.currency_name}
-                    onPress={() => console.log('Euro clicked')}
+                    onPress={() => setSelectedCurrency(currency)}
+                    onPressMore={() => openDeleteDialog(currency)}
                 />
             ))}
-
-            {/*<DrawerItem*/}
-            {/*    label="Add Currency"*/}
-            {/*    onPress={() => alert('Add Currency pressed')}*/}
-            {/*    labelStyle={{ color: 'black', fontWeight: 'bold' }}*/}
-            {/*/>*/}
 
             <Pressable
                 style={({ pressed }) => [
                     styles.button,
                     pressed && styles.buttonPressed,
                 ]}
-                onPress={openAddCurrencyDialog}
+                onPress={() => {
+                    navigation.closeDrawer()
+                        setTimeout(() => {
+                        openAddCurrencyDialog();
+                }, 300)
+            }}
             >
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="add" size={24} color="black" />
@@ -60,6 +68,11 @@ export function CustomDrawerContent(props) {
                 <Text style={styles.text}>Add currency</Text>
             </Pressable>
 
+            <DeleteCurrencyDialog
+                visible={deleteDialogVisible}
+                onDismiss={() => setDeleteDialogVisible(false)}
+                currencyToDelete={currencyToDelete}
+            />
         </DrawerContentScrollView>
     );
 }

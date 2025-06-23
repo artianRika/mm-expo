@@ -1,7 +1,6 @@
 import {supabase} from "../lib/supabase.js";
-import {createContext, useCallback, useContext, useEffect, useState} from "react";
+import {createContext, useCallback, useEffect, useState} from "react";
 // import {UserContext} from "@/Context/UserContext.jsx";
-import {useNavigate} from "react-router-dom";
 
 export const CurrencyContext = createContext();
 
@@ -17,8 +16,8 @@ export const CurrencyProvider = ({ children }) => {
     const [numberOfCurrencies, setNumberOfCurrencies] = useState(0);
     const [numberOfTransactions, setNumberOfTransactions] = useState(0);
 
-    // const [name, setName] = useState(selectedCurrency.currency_name || "Name");
-    // const [amount, setAmount] = useState(selectedCurrency.amount || "Amount");
+    const [name, setName] = useState(selectedCurrency.currency_name || "Name");
+    const [amount, setAmount] = useState(selectedCurrency.amount || "Amount");
 
     // const navigate = useNavigate()
 
@@ -28,12 +27,13 @@ export const CurrencyProvider = ({ children }) => {
     //     getCurrencies()
     // }, [authUser])
 
-    // useEffect(() => {
-    //     if (selectedCurrency) {
-    //         setName(selectedCurrency.currency_name || "");
-    //         setAmount(selectedCurrency.amount || 0);
-    //     }
-    // }, [selectedCurrency]);
+
+    useEffect(() => {
+        if (selectedCurrency) {
+            setName(selectedCurrency?.currency_name || "");
+            setAmount(selectedCurrency?.amount || 0);
+        }
+    }, [selectedCurrency]);
 
     useEffect(() => {
         getNumberOfCurrencies();
@@ -132,32 +132,32 @@ export const CurrencyProvider = ({ children }) => {
     //     }
     // };
 
-    // const updateCurrency = async (transAmount = 0, transType=null) =>{
-    //     let newAmount = amount;
-    //     if(transType !== null){
-    //         if(transType === "Income")
-    //             newAmount += transAmount;
-    //         else
-    //             newAmount -= transAmount;
-    //     }
-    //
-    //     if(name !== selectedCurrency.currency_name || (newAmount) !== selectedCurrency.amount){
-    //         const { data, error } = await supabase
-    //             .from('Currencies')
-    //             .update({
-    //                 amount: newAmount,
-    //                 currency_name: name,
-    //             })
-    //             .eq('currency_id', selectedCurrency.currency_id);
-    //
-    //         if (error) {
-    //             console.error('Update error:', error);
-    //         } else {
-    //             console.log('Updated successfully:', data);
-    //             getCurrencies(selectedCurrency.currency_id);
-    //         }
-    //     }
-    // }
+    const updateCurrency = async (transAmount = 0, transType=null) =>{
+        let newAmount = amount;
+        if(transType !== null){
+            if(transType === "Income")
+                newAmount += transAmount;
+            else
+                newAmount -= transAmount;
+        }
+
+        if(name !== selectedCurrency.currency_name || (newAmount) !== selectedCurrency.amount){
+            const { data, error } = await supabase
+                .from('Currencies')
+                .update({
+                    amount: newAmount,
+                    currency_name: name,
+                })
+                .eq('currency_id', selectedCurrency.currency_id);
+
+            if (error) {
+                console.error('Update error:', error);
+            } else {
+                console.log('Updated successfully:', data);
+                getCurrencies(selectedCurrency.currency_id);
+            }
+        }
+    }
 
     return (
         <CurrencyContext.Provider
@@ -169,14 +169,14 @@ export const CurrencyProvider = ({ children }) => {
                 getCurrencies,
 
                 numberOfCurrencies,
-                numberOfTransactions
+                numberOfTransactions,
                 // getCurrencyById,
 
-                // name,
-                // setName,
-                // amount,
-                // setAmount,
-                // updateCurrency
+                name,
+                setName,
+                amount,
+                setAmount,
+                updateCurrency
             }}
         >
             {children}

@@ -1,8 +1,8 @@
 import React from 'react';
-import {Pressable, Text, Image, StyleSheet, View, useColorScheme, Appearance} from 'react-native';
+import {Pressable, Text, Image, StyleSheet, View, Appearance} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function CurrencyButton({ currency, currencyName, onPress }) {
-
+export default function CurrencyButton({ currency, currencyName, onPress, onPressMore }) {
 
     Appearance.getColorScheme = () => 'light';
 
@@ -36,6 +36,13 @@ export default function CurrencyButton({ currency, currencyName, onPress }) {
                     resizeMode="contain"
                 />
                 <Text style={styles.text}>{currencyName}</Text>
+
+                {/* Three dots icon for more actions */}
+                {onPressMore && (
+                    <Pressable onPress={onPressMore} style={styles.moreButton} hitSlop={10}>
+                        <MaterialIcons name="more-vert" size={24} color="black" />
+                    </Pressable>
+                )}
             </View>
         </Pressable>
     );
@@ -45,9 +52,9 @@ const styles = StyleSheet.create({
 
     button: {
         minHeight: 48,
-        paddingHorizontal: 20, // similar to px: 2.5
-        marginHorizontal: 16,  // ~1rem
-        marginVertical: 8,     // ~.5rem
+        paddingHorizontal: 20,
+        marginHorizontal: 16,
+        marginVertical: 8,
         backgroundColor: '#fff',
         borderWidth: 0.3,
         borderColor: '#ccc',
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
     content: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
     icon: {
         width: 24,
@@ -71,5 +79,11 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: 'black',
+        flex: 1, // take remaining space
+    },
+    moreButton: {
+        paddingHorizontal: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

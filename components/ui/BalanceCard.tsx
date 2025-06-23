@@ -1,13 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import {CurrencyContext} from "@/contexts/currencyContext";
+import UpdateCurrencyDialog from "@/components/dialogs/UpdateCurrencyDialog";
+
 
 export const BalanceCard = () => {
-    // const { selectedCurrency } = useContext(CurrencyContext);
+    const { selectedCurrency } = useContext(CurrencyContext);
 
-    const [editAmountAlertOpen, setEditAmountAlertOpen] = useState(false);
+
     const [addTransactionAlertOpen, setTransactionAlertOpen] = useState(false);
     const [type, setType] = useState('Expense');
+
+
+    const [editAmountAlertOpen, setEditAmountAlertOpen] = useState(false);
+    const openEditDialog = () => setEditAmountAlertOpen(true);
+    const closeEditDialog = () => setEditAmountAlertOpen(false);
 
     return (
         <View style={styles.outerContainer}>
@@ -15,24 +23,21 @@ export const BalanceCard = () => {
                 {/* Header */}
                 <View style={styles.header}>
                     <Text style={styles.currencyName}>
-                        currency namee
-                        {/*{selectedCurrency.currency_name}*/}
+                        { selectedCurrency.currency_name }
                     </Text>
-                    <Pressable onPress={() => setEditAmountAlertOpen(true)}>
+                    <Pressable onPress={openEditDialog}>
                         <MaterialIcons name="edit" size={24} color="black" />
                     </Pressable>
                 </View>
 
-                {/*<UpdateCurrencyDialog*/}
-                {/*    visible={editAmountAlertOpen}*/}
-                {/*    onClose={() => setEditAmountAlertOpen(false)}*/}
-                {/*/>*/}
+                <UpdateCurrencyDialog
+                    visible={editAmountAlertOpen}
+                    onDismiss={closeEditDialog}
+                />
 
                 {/* Amount Display */}
                 <Text style={styles.amountText}>
-                    amount display
-                    {/*{selectedCurrency.amount}*/}
-                    {/*{selectedCurrency.currency}*/}
+                    {selectedCurrency.amount + " " + selectedCurrency.currency}
                 </Text>
 
                 {/* Action Buttons */}
@@ -60,12 +65,6 @@ export const BalanceCard = () => {
                     </Pressable>
                 </View>
 
-                {/*<AddTransactionDialog*/}
-                {/*    type={type}*/}
-                {/*    setType={setType}*/}
-                {/*    visible={addTransactionAlertOpen}*/}
-                {/*    onClose={() => setTransactionAlertOpen(false)}*/}
-                {/*/>*/}
             </View>
         </View>
     );
@@ -98,8 +97,10 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     currencyName: {
-        fontSize: 16,
+        fontSize: 26,
         fontWeight: '500',
+        color: 'black',
+
     },
     amountText: {
         fontSize: 32,
