@@ -1,6 +1,6 @@
 import {supabase} from "../lib/supabase.js";
-import {createContext, useCallback, useEffect, useState} from "react";
-// import {UserContext} from "@/Context/UserContext.jsx";
+import {createContext, useCallback, useContext, useEffect, useState} from "react";
+import {UserContext} from "@/contexts/UserContext";
 
 export const CurrencyContext = createContext();
 
@@ -8,7 +8,7 @@ export const CurrencyContext = createContext();
 
 export const CurrencyProvider = ({ children }) => {
 
-    // const { authUser } = useContext(UserContext)
+    const { authUser } = useContext(UserContext)
 
     const [currencyList, setCurrencyList] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState({});
@@ -19,13 +19,12 @@ export const CurrencyProvider = ({ children }) => {
     const [name, setName] = useState(selectedCurrency.currency_name || "Name");
     const [amount, setAmount] = useState(selectedCurrency.amount || "Amount");
 
-    // const navigate = useNavigate()
+    useEffect(() => {
+        if (!authUser?.id) return;
 
-    // useEffect(() => {
-    //     if (!authUser?.id) return;
-    //
-    //     getCurrencies()
-    // }, [authUser])
+        getCurrencies()
+        setSelectedCurrency([])
+    }, [authUser])
 
 
     useEffect(() => {
@@ -34,6 +33,7 @@ export const CurrencyProvider = ({ children }) => {
             setAmount(selectedCurrency?.amount || 0);
         }
     }, [selectedCurrency]);
+
 
     useEffect(() => {
         getNumberOfCurrencies();
@@ -45,7 +45,7 @@ export const CurrencyProvider = ({ children }) => {
         const {data, error} = await supabase
             .from("Currencies")
             .select()
-            .eq('user_id', '68c52304-7c95-4791-a6b5-33c29068c6dc') //TODO: change iit
+            .eq('user_id', authUser.id)
             .order('currency_id', {ascending: true});
 
         if (error) {
@@ -67,70 +67,50 @@ export const CurrencyProvider = ({ children }) => {
                 }
             }
         }
-    }, []);  //TODO: [authUser]
+    }, [authUser]);
 
     const getNumberOfCurrencies = async () =>{
-        const { count, error } = await supabase
-            .from('Currencies')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', '68c52304-7c95-4791-a6b5-33c29068c6dc');
-        //TODO: authuserids
+        if(authUser){
+            const { count, error } = await supabase
+                .from('Currencies')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', authUser?.id);
 
-        if (error) {
-            console.error('Error fetching currencies:', error);
-        } else {
-            setNumberOfCurrencies(count)
+            if (error) {
+                console.error('Error fetching currencies:', error);
+            } else {
+                setNumberOfCurrencies(count)
+            }
         }
-
     }
 
     const getNumberOfTransactions = async () =>{
-        const { count, error } = await supabase
-            .from('Transactions')
-            .select('*', {
-                count: 'exact',
-                head: true,
-            })
-            .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-            .in('currency_id',
-                (
-                    await supabase
-                        .from('Currencies')
-                        .select('currency_id')
-                        .eq('user_id', '68c52304-7c95-4791-a6b5-33c29068c6dc') //TODO: change
-                ).data.map(c => c.currency_id)
-            );
+        if(authUser) {
 
-        if (error) {
-            console.error('Error counting transactions:', error);
-        } else {
-            setNumberOfTransactions(count)
-            console.log('Transaction count in past 7 days:', count);
+            const {count, error} = await supabase
+                .from('Transactions')
+                .select('*', {
+                    count: 'exact',
+                    head: true,
+                })
+                .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+                .in('currency_id',
+                    (
+                        await supabase
+                            .from('Currencies')
+                            .select('currency_id')
+                            .eq('user_id', authUser?.id)
+                    ).data?.map(c => c.currency_id)
+                );
+
+            if (error) {
+                console.error('Error counting transactions:', error);
+            } else {
+                setNumberOfTransactions(count)
+                console.log('Transaction count in past 7 days:', count);
+            }
         }
-
     }
-
-    // const getCurrencyById = async (currencyId) => {
-    //
-    //     const {data, error} = await supabase
-    //         .from("Currencies")
-    //         .select()
-    //         .eq('user_id', authUser.id)
-    //         .eq('currency_id', currencyId)
-    //
-    //     if (error) {
-    //         console.error('Error fetching currency with id:', currencyId, error);
-    //         navigate('/')
-    //     } else {
-    //         if (data.length > 0){
-    //             setSelectedCurrency(data[0]);
-    //         }
-    //         else{
-    //             console.log("setting selected currency null")
-    //             navigate('/')
-    //         }
-    //     }
-    // };
 
     const updateCurrency = async (transAmount = 0, transType=null) =>{
         let newAmount = amount;
@@ -170,7 +150,6 @@ export const CurrencyProvider = ({ children }) => {
 
                 numberOfCurrencies,
                 numberOfTransactions,
-                // getCurrencyById,
 
                 name,
                 setName,

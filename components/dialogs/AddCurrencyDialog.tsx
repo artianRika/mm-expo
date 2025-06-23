@@ -4,9 +4,12 @@ import { Button, Dialog, Portal, Paragraph } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { CurrencyContext } from '../../contexts/currencyContext';
 import { supabase } from '../../lib/supabase';
+import {UserContext} from "@/contexts/UserContext";
 
 export default function AddCurrencyDialog({ visible, onDismiss }) {
     const { getCurrencies } = useContext(CurrencyContext);
+
+    const { authUser } = useContext(UserContext);
 
     const [currency, setCurrency] = useState('');
     const [currencyName, setCurrencyName] = useState('Savings...');
@@ -17,7 +20,7 @@ export default function AddCurrencyDialog({ visible, onDismiss }) {
 
         const { error } = await supabase.from('Currencies').insert([
             {
-                user_id: '68c52304-7c95-4791-a6b5-33c29068c6dc', // TODO: replace with actual user id
+                user_id: authUser.id,
                 amount: Number(amount),
                 currency,
                 currency_name: currencyName,

@@ -1,13 +1,13 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-// import { UserContext } from "../../contexts/userContext";
 import {CurrencyContext} from "@/contexts/currencyContext";
 import {supabase} from "@/lib/supabase";
+import {UserContext} from "@/contexts/UserContext";
 
 export const TransactionsContext = createContext();
 
 export const TransactionsProvider = ({ children }) => {
-    // const { authUser } = useContext(UserContext);
+    const { authUser } = useContext(UserContext);
     const { selectedCurrency, currencyList } = useContext(CurrencyContext);
 
     const [transactions, setTransactions] = useState([]);
@@ -31,7 +31,7 @@ export const TransactionsProvider = ({ children }) => {
       `
             )
             .eq("currency_id", selectedCurrency.currency_id)
-            .eq("Currencies.user_id", '68c52304-7c95-4791-a6b5-33c29068c6dc') //TODO: authUser?.id
+            .eq("Currencies.user_id", authUser?.id)
             .order("created_at", { ascending: false });
 
         if (error) {
@@ -39,7 +39,7 @@ export const TransactionsProvider = ({ children }) => {
         } else {
             setTransactions(data);
         }
-    }, [selectedCurrency?.currency_id, fromDate, toDate]); //TODO: authUser?.id
+    }, [selectedCurrency?.currency_id, authUser, fromDate, toDate]);
 
     useEffect(() => {
         getTransactions();

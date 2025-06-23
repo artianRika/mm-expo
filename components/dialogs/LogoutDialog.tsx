@@ -12,7 +12,7 @@ import { UserContext } from '@/contexts/UserContext';
 const screenWidth = Dimensions.get('window').width;
 
 export function LogoutDialog({ alertOpen, onAlertClose }) {
-    // const { signOut } = useContext(UserContext);
+    const { signOut } = useContext(UserContext);
 
     return (
         <Modal
@@ -32,7 +32,7 @@ export function LogoutDialog({ alertOpen, onAlertClose }) {
 
                         <TouchableOpacity
                             style={styles.logoutButton}
-                            // onPress={signOut}
+                            onPress={signOut}
                         >
                             <Text style={styles.logoutText}>Log Out</Text>
                         </TouchableOpacity>

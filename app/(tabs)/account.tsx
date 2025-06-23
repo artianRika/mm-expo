@@ -3,19 +3,16 @@ import {Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {Colors} from '@/constants/Colors';
 import {CurrencyContext} from "@/contexts/currencyContext";
 import {LogoutDialog} from "@/components/dialogs/LogoutDialog";
+import {UserContext} from "@/contexts/UserContext";
 
 
 export default function AccountScreen() {
     const {numberOfCurrencies, numberOfTransactions} = useContext(CurrencyContext)
 
+    const { user } = useContext(UserContext)
+
     const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
 
-    const user = {
-        name: 'Artian',
-        surname: 'Rika',
-        profilePic: 'https://i.pravatar.cc/150?img=3',
-        weeklyTransactions: 12,
-    };
 
     const backgroundColor = Colors['light'].background;
     const textColor = Colors['light'].text;
@@ -24,9 +21,9 @@ export default function AccountScreen() {
         <>
         <View style={[styles.container, { backgroundColor }]}>
             <View style={styles.content}>
-                <Image source={{ uri: user.profilePic }} style={styles.avatar} />
+                <Image source={{ uri: 'https://i.pravatar.cc/150?img=12' }} style={styles.avatar} />
                 <Text style={[styles.name, { color: textColor }]}>
-                    {user.name} {user.surname}
+                    {user?.first_name} {user?.last_name}
                 </Text>
 
                 <View style={styles.statsContainer}>

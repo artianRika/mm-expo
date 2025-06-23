@@ -5,7 +5,7 @@ import { CurrencyContext } from '../../contexts/currencyContext';
 import { supabase } from '../../lib/supabase';
 
 export default function DeleteCurrencyDialog({ visible, onDismiss, currencyToDelete }) {
-    const { getCurrencies } = useContext(CurrencyContext);
+    const { getCurrencies, setSelectedCurrency } = useContext(CurrencyContext);
 
     const handleDelete = async () => {
         if (!currencyToDelete) return;
